@@ -35,3 +35,6 @@ npm-debug.log*
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Runtime data (generated at runtime, not source)
+backend/data/
