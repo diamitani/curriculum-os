@@ -1,20 +1,19 @@
 """
 Auth endpoints — register, login, and current-user lookup.
 """
-
 import hashlib
-import json
 import os
 import uuid
 from datetime import datetime, timedelta, timezone
 
 import jwt
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from src.curriculum_agent.api.dependencies import (
     _load_users,
     _save_users,
+    _get_user_by_email,
     get_current_user,
 )
 from src.curriculum_agent.config import config
@@ -64,16 +63,13 @@ async def register(request: RegisterRequest):
     if len(request.password) < 6:
         raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
 
-    users = _load_users()
-
-    # Check for existing email
-    for u in users:
-        if u["email"] == email:
-            raise HTTPException(status_code=409, detail="Email already registered")
+    # Check for existing email (uses DynamoDB or JSON depending on config)
+    existing = _get_user_by_email(email)
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Email already registered")
 
     salt = os.urandom(32).hex()
     password_hash = _hash_password(request.password, salt)
-
     now = datetime.now(timezone.utc).isoformat()
     user = {
         "id": str(uuid.uuid4()),
@@ -85,8 +81,8 @@ async def register(request: RegisterRequest):
         "created_at": now,
     }
 
-    users.append(user)
-    _save_users(users)
+    # Persist: in DynamoDB mode _save_users writes only the new user
+    _save_users([user])
 
     token = _generate_token(user["id"])
     return TokenResponse(
@@ -108,14 +104,7 @@ async def login(request: LoginRequest):
     if not email or not request.password:
         raise HTTPException(status_code=400, detail="Email and password are required")
 
-    users = _load_users()
-
-    user = None
-    for u in users:
-        if u["email"] == email:
-            user = u
-            break
-
+    user = _get_user_by_email(email)
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
