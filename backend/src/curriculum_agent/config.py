@@ -34,7 +34,15 @@ class Config:
 
     JWT_SECRET: str = os.getenv("JWT_SECRET", "curriculum-os-dev-secret-change-in-production")
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
+
+    # Local fallback data dir (used when DynamoDB is not configured)
     DATA_DIR: Path = Path(os.getenv("DATA_DIR", str(BASE_DIR / "data")))
+
+    # AWS / DynamoDB settings
+    AWS_REGION: str = os.getenv("AWS_REGION", "us-east-1")
+    DYNAMODB_USERS_TABLE: str = os.getenv("DYNAMODB_USERS_TABLE", "curriculum_os_users")
+    # Set USE_DYNAMODB=true in production; falls back to JSON file locally
+    USE_DYNAMODB: bool = os.getenv("USE_DYNAMODB", "false").lower() == "true"
 
     @classmethod
     def verify(cls) -> list[str]:
@@ -46,14 +54,11 @@ class Config:
         checks.append(
             f"✓ RAG DAL confidence threshold: {cls.RAGDAL_CONFIDENCE_THRESHOLD}"
         )
-        checks.append(f"✓ Knowledge base path: {cls.KNOWLEDGE_BASE_PATH}")
-        checks.append(f"✓ Rostr Hub: {'ready' if cls._hub_ready() else 'needs init'}")
+        if cls.USE_DYNAMODB:
+            checks.append(f"✓ DynamoDB enabled — table: {cls.DYNAMODB_USERS_TABLE} in {cls.AWS_REGION}")
+        else:
+            checks.append("ℹ DynamoDB disabled — using local JSON file storage")
         return checks
-
-    @classmethod
-    def _hub_ready(cls) -> bool:
-        hub_path = cls.BASE_DIR / "rostr-hub"
-        return hub_path.exists()
 
 
 config = Config()
