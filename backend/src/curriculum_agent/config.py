@@ -32,6 +32,10 @@ class Config:
 
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
 
+    JWT_SECRET: str = os.getenv("JWT_SECRET", "curriculum-os-dev-secret-change-in-production")
+    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
+    DATA_DIR: Path = Path(os.getenv("DATA_DIR", str(BASE_DIR / "data")))
+
     @classmethod
     def verify(cls) -> list[str]:
         checks = []

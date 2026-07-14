@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.curriculum_agent.api.routes import router
+from src.curriculum_agent.api.auth import router as auth_router
+from src.curriculum_agent.api.curriculum_store import router as curricula_router
 from src.curriculum_agent.config import config
 
 app = FastAPI(
@@ -18,6 +20,8 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(auth_router)
+app.include_router(curricula_router)
 
 
 @app.on_event("startup")

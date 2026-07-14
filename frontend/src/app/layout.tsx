@@ -1,20 +1,14 @@
-import type { Metadata } from "next";
+"use client";
+
 import "./globals.css";
+import { AuthProvider } from "@/lib/auth";
 
-export const metadata: Metadata = {
-  title: "CurriculumOS — AI Curriculum Architect",
-  description:
-    "Research, index, and generate personalized learning paths with AI",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

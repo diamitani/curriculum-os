@@ -126,6 +126,24 @@ class MasterIndex(BaseModel):
     confidence: float = 0.0
 
 
+class User(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    password_hash: str
+    salt: str
+    name: str = ""
+    plan: str = "free"
+    created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    name: str
+    plan: str
+    created_at: str
+
+
 class PALIntent(BaseModel):
     primary_intent: str
     domain: str
