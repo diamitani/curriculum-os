@@ -11,9 +11,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from src.curriculum_agent.api.dependencies import (
-    _load_users,
-    _save_users,
     _get_user_by_email,
+    _save_users,
     get_current_user,
 )
 from src.curriculum_agent.config import config
@@ -63,7 +62,6 @@ async def register(request: RegisterRequest):
     if len(request.password) < 6:
         raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
 
-    # Check for existing email (uses DynamoDB or JSON depending on config)
     existing = _get_user_by_email(email)
     if existing is not None:
         raise HTTPException(status_code=409, detail="Email already registered")
@@ -81,7 +79,6 @@ async def register(request: RegisterRequest):
         "created_at": now,
     }
 
-    # Persist: in DynamoDB mode _save_users writes only the new user
     _save_users([user])
 
     token = _generate_token(user["id"])
