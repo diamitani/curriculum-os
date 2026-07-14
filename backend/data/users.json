@@ -34,5 +34,23 @@
     "name": "",
     "plan": "free",
     "created_at": "2026-07-14T18:13:36.368094+00:00"
+  },
+  {
+    "id": "c946cdb5-3665-410b-a6ce-b3b8f3007ca8",
+    "email": "v3@test.com",
+    "password_hash": "fddf7ec4192f4fe76d78a523ffa2cae7127744f5e42bbdf74131d811edef1caf",
+    "salt": "70531fe3d80f3e8e69adc763212b2d02285d24f6c3ae99b755b431a21bde4fcd",
+    "name": "V3",
+    "plan": "free",
+    "created_at": "2026-07-14T18:13:52.131460+00:00"
+  },
+  {
+    "id": "a25bad5c-ef76-42da-8a4f-2940052d41bf",
+    "email": "other@test.com",
+    "password_hash": "0a5771d3873299f0d86a81df18f58f7b4e74b7704d7b459137afb60dd7c427d7",
+    "salt": "392129110fbd2bfe0fa7385d4d61892835a0871fde8b360bd0786089959b0a8f",
+    "name": "Other",
+    "plan": "free",
+    "created_at": "2026-07-14T18:13:52.147513+00:00"
   }
 ]

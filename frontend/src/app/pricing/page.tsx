@@ -1,12 +1,13 @@
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import Link from "next/link";
-import { CheckCircle, ArrowRight } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import { StripeCheckoutButton } from "@/components/StripeCheckoutButton";
 
 const tiers = [
-  { name: "Free", price: "$0", period: "forever", features: ["3 curricula per month", "Basic resource search", "Standard lesson plans", "Web access"], cta: "Get Started", href: "/signup", featured: false },
-  { name: "Pro", price: "$19", period: "/month", features: ["Unlimited curricula", "Advanced AI research", "Custom content generation", "Save & track progress", "Priority support", "Export to PDF/Markdown"], cta: "Start Pro", href: "/signup?plan=pro", featured: true },
-  { name: "Team", price: "$49", period: "/month", features: ["Everything in Pro", "Team dashboards", "Shared curricula", "Admin controls", "API access", "SSO"], cta: "Contact Sales", href: "/signup?plan=team", featured: false },
+  { name: "Free", price: "$0", period: "forever", features: ["3 curricula per month", "Basic resource search", "Standard lesson plans", "Web access"], cta: "Get Started", plan: "free", featured: false },
+  { name: "Pro", price: "$19", period: "/month", features: ["Unlimited curricula", "Advanced AI research", "Custom content generation", "Save & track progress", "Priority support", "Export to PDF/Markdown"], cta: "Start Pro", plan: "pro", featured: true },
+  { name: "Team", price: "$49", period: "/month", features: ["Everything in Pro", "Team dashboards", "Shared curricula", "Admin controls", "API access", "SSO"], cta: "Contact Sales", plan: "team", featured: false },
 ];
 
 export default function PricingPage() {
@@ -29,7 +30,11 @@ export default function PricingPage() {
                   <li key={i} className="flex items-start gap-2 text-sm"><CheckCircle size={14} className="text-emerald-400 mt-0.5 flex-shrink-0" />{f}</li>
                 ))}
               </ul>
-              <Link href={t.href} className={`block text-center py-2.5 rounded-xl font-medium text-sm transition-colors ${t.featured ? "bg-primary text-primary-foreground hover:bg-primary/90" : "border border-border hover:bg-secondary/50"}`}>{t.cta}</Link>
+              {t.plan === "free" ? (
+                <Link href="/signup" className={`block text-center py-2.5 rounded-xl font-medium text-sm transition-colors border border-border hover:bg-secondary/50`}>{t.cta}</Link>
+              ) : (
+                <StripeCheckoutButton plan={t.plan} label={t.cta} variant={t.featured ? "primary" : "outline"} />
+              )}
             </div>
           ))}
         </div>
