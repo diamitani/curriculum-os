@@ -1,7 +1,9 @@
-"use client";
-
-import { ChatContainer } from "@/components/ChatContainer";
+import { ChatInterface } from '@/components/chat/ChatInterface';
 
 export default function ChatPage() {
-  return <ChatContainer />;
+  return (
+    <main className="min-h-screen bg-black">
+      <ChatInterface />
+    </main>
+  );
 }
