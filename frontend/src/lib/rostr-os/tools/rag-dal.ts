@@ -1,35 +1,31 @@
+
 import { z } from 'zod';
 
-// RAG DAL (Dynamic Acquisition Layer) Tools
-// This layer is responsible for multi-pass credibility-stratified search.
-
-export const searchTier1Docs = {
-  description: 'Searches authoritative Tier 1 documentation sources (e.g. academic papers, official SDKs). Use this to verify ground truth architectural patterns.',
+/**
+ * RAG DAL (Dynamic Acquisition Layer) Tool
+ * Implements autonomous, credibility-stratified information gathering.
+ */
+export const ragDalTool = {
+  description: "Search for authoritative information using the 3-Tier Credibility Hierarchy (Tier 1: Docs/Standards, Tier 2: Editorial/Industry, Tier 3: Community/UGC).",
   parameters: z.object({
-    query: z.string().describe('The search query or concept to investigate'),
+    query: z.string().describe("The search query"),
+    minTier: z.enum(['Tier 1', 'Tier 2', 'Tier 3']).default('Tier 2').describe("The minimum credibility tier required for sources")
   }),
-  execute: async ({ query }: { query: string }) => {
-    // In a real implementation, this would call a Vector DB or custom search API 
-    // restricted to tier-1 domains (e.g. .edu, .gov, official doc sites).
+  execute: async ({ query, minTier }) => {
+    // In a real implementation, this would connect to an enterprise search API or vector DB
+    console.log(`[RAG DAL] Executing search for "${query}" with min credibility ${minTier}`);
+    
+    // Stub implementation returning simulated data
     return {
-      sourceTier: 1,
-      results: `Mock Tier-1 Documentation for: ${query}. Use this as ground truth.`,
-      confidence: 1.0
+      status: "SUCCESS",
+      confidence: 0.85,
+      sources: [
+        {
+          tier: "Tier 1",
+          url: "https://example.com/official-docs",
+          snippet: "Simulated official documentation snippet for " + query
+        }
+      ]
     };
-  },
-};
-
-export const searchTier3Community = {
-  description: 'Searches Tier 3 community sources (e.g. Reddit, StackOverflow) for edge cases, error codes, and community sentiment. Do not use this as ground truth for architecture.',
-  parameters: z.object({
-    query: z.string().describe('The error code, edge case, or concept to investigate'),
-  }),
-  execute: async ({ query }: { query: string }) => {
-    // In a real implementation, this would search forums or use an external API like Tavily.
-    return {
-      sourceTier: 3,
-      results: `Mock Tier-3 Forum discussion for: ${query}. Treat with skepticism.`,
-      confidence: 0.4
-    };
-  },
+  }
 };

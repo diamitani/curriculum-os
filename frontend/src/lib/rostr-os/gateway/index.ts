@@ -1,14 +1,14 @@
 import { createOpenAI } from '@ai-sdk/openai';
+import { createAnthropic } from '@ai-sdk/anthropic';
 
-export function getProviderModel(modelName: string = 'gpt-4o') {
-  const gatewayUrl = process.env.VERCEL_AI_GATEWAY_URL;
-  
-  // If a Vercel AI Gateway URL is provided, we route through it.
-  // Otherwise, we fallback to the standard OpenAI API using OPENAI_API_KEY.
-  const openai = createOpenAI({
-    baseURL: gatewayUrl || 'https://api.openai.com/v1',
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+// Central Gateway for LLMs in ROSTR OS
+export const openai = createOpenAI({ 
+  apiKey: process.env.OPENAI_API_KEY 
+});
 
-  return openai(modelName);
-}
+export const anthropic = createAnthropic({ 
+  apiKey: process.env.ANTHROPIC_API_KEY 
+});
+
+// The ROSTR OS Default Model recommended for agentic reasoning
+export const defaultModel = anthropic('claude-3-5-sonnet-20240620');
