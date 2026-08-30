@@ -11,7 +11,7 @@ export const ragDalTool = {
     query: z.string().describe("The search query"),
     minTier: z.enum(['Tier 1', 'Tier 2', 'Tier 3']).default('Tier 2').describe("The minimum credibility tier required for sources")
   }),
-  execute: async ({ query, minTier }) => {
+  execute: async ({ query, minTier }: { query: string; minTier: string }) => {
     // In a real implementation, this would connect to an enterprise search API or vector DB
     console.log(`[RAG DAL] Executing search for "${query}" with min credibility ${minTier}`);
     
