@@ -50,12 +50,12 @@ When the user approves a finalized curriculum outline, you MUST call the saveCur
           execute: async ({ title, description, modules }: { title: string; description: string; modules: { title: string; content: string; estimated_duration_mins: number }[] }) => {
             if (!user) return { success: false, error: 'User is not authenticated.' };
             
-            const { data: curriculum, error: cErr } = await supabase.from('curricula').insert({
+            const { data: curriculum, error: cErr } = (await supabase.from('curricula').insert({
               title,
               description,
               author_id: user.id,
               status: 'draft'
-            } as any).select().single();
+            } as any).select().single()) as any;
             
             if (cErr || !curriculum) return { success: false, error: cErr?.message };
             
