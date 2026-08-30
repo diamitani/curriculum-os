@@ -1,38 +1,49 @@
-"use client";
-
 import Link from "next/link";
-import { useAuth } from "@/lib/auth";
-import { motion } from "framer-motion";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { BookOpen, MessageSquare, Plus, Sparkles, ArrowRight, Clock, GraduationCap, Zap } from "lucide-react";
 
-export default function DashboardPage() {
-  const { user } = useAuth();
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  // Fetch count of curricula
+  const { count } = await supabase
+    .from("curricula")
+    .select("*", { count: "exact", head: true })
+    .eq("author_id", user.id);
+
+  // Fetch user profile for subscription tier
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_tier")
+    .eq("id", user.id)
+    .single();
+
+  const isPro = profile?.subscription_tier === 'pro' || profile?.subscription_tier === 'enterprise';
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 h-full">
       {/* ── Greeting ── */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="mb-10"
-      >
+      <div className="mb-10">
         <h1 className="text-3xl font-bold font-display tracking-tight text-foreground">
-          Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
+          Welcome back{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name.split(" ")[0]}` : ""}
         </h1>
         <p className="text-muted-foreground mt-2 text-sm max-w-xl">
           Here is what's happening with your learning architecture today. You have <span className="font-semibold text-foreground">3 free AI generations</span> remaining.
         </p>
-      </motion.div>
+      </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           
           {/* ── Quick Actions (Bento Style) ── */}
           <div className="grid sm:grid-cols-2 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}
-            >
+            <div>
               <Link href="/app/chat" className="group relative block bg-card border border-border/60 hover:border-primary/50 rounded-2xl p-6 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Zap size={64} className="text-primary rotate-12" />
@@ -48,11 +59,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}
-            >
+            <div>
               <Link href="/app/curricula" className="group relative block bg-card border border-border/60 hover:border-emerald-500/50 rounded-2xl p-6 overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <BookOpen size={64} className="text-emerald-500 -rotate-12" />
@@ -68,13 +77,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           {/* ── Recent Activity ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}
-          >
+          <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-lg">Recent Activity</h2>
               <Link href="/app/curricula" className="text-sm text-primary hover:underline">View all</Link>
@@ -91,16 +98,13 @@ export default function DashboardPage() {
                 <Sparkles size={16} /> Create Curriculum
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* ── Sidebar Column (Stats) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.25 }}
-          className="space-y-6"
-        >
+        <div className="space-y-6">
           {/* Upgrade Card */}
-          {user?.plan === "free" && (
+          {!isPro && (
             <div className="bg-gradient-to-br from-indigo-900 to-primary text-white rounded-2xl p-6 relative overflow-hidden shadow-xl shadow-primary/20">
               <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
               <h3 className="font-bold text-lg mb-2 relative z-10 flex items-center gap-2"><Sparkles size={18} className="text-amber-300"/> Upgrade to Pro</h3>
@@ -122,7 +126,7 @@ export default function DashboardPage() {
                   </div>
                   <span className="text-sm font-medium">Total Curricula</span>
                 </div>
-                <span className="font-bold text-lg">0</span>
+                <span className="font-bold text-lg">{count || 0}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -140,11 +144,11 @@ export default function DashboardPage() {
                   </div>
                   <span className="text-sm font-medium">AI Tokens</span>
                 </div>
-                <span className="font-bold text-lg">{user?.plan === "free" ? "3" : "∞"}</span>
+                <span className="font-bold text-lg">{isPro ? "∞" : "3"}</span>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -1,59 +1,33 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 
-const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY || "";
-const PRICE_IDS: Record<string, string> = {
-  pro: process.env.STRIPE_PRO_PRICE_ID || "",
-  team: process.env.STRIPE_TEAM_PRICE_ID || "",
-};
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { plan, email } = await req.json();
-    const priceId = PRICE_IDS[plan];
-    if (!priceId) {
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+    const { plan } = await req.json();
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'You must be logged in to subscribe.' }, { status: 401 });
     }
 
-    if (!STRIPE_SECRET) {
-      return NextResponse.json(
-        {
-          error: "Stripe not configured",
-          message: "Set STRIPE_SECRET_KEY and price IDs in environment variables.",
-        },
-        { status: 503 }
-      );
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json({ 
+        message: 'Stripe is not configured yet. Please add STRIPE_SECRET_KEY to your environment variables.'
+      });
     }
 
-    // Use raw fetch to Stripe API (avoids needing stripe npm package)
-    const params = new URLSearchParams();
-    params.append("line_items[0][price]", priceId);
-    params.append("line_items[0][quantity]", "1");
-    params.append("mode", "subscription");
-    params.append("success_url", `${req.nextUrl.origin}/app?checkout=success`);
-    params.append("cancel_url", `${req.nextUrl.origin}/pricing?checkout=cancelled`);
-    if (email) params.append("customer_email", email);
-    params.append("allow_promotion_codes", "true");
+    // In a real app, initialize Stripe and create a checkout session
+    // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    // const session = await stripe.checkout.sessions.create({ ... });
+    // return NextResponse.json({ url: session.url });
 
-    const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${STRIPE_SECRET}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: params.toString(),
+    return NextResponse.json({ 
+      message: 'Stripe keys detected, but Checkout flow is pending final product prices.'
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      return NextResponse.json({ error: "Stripe API error", detail: err }, { status: 502 });
-    }
-
-    const session = await response.json();
-    return NextResponse.json({ url: session.url });
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Internal error", detail: String(err) },
-      { status: 500 }
-    );
+  } catch (error: any) {
+    console.error('Stripe error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
