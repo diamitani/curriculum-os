@@ -6,7 +6,10 @@ import { VideoAssetPanel } from "@/components/dashboard/VideoAssetPanel";
 
 export const dynamic = "force-dynamic";
 
-export default async function CurriculumDetailPage({ params }: { params: { id: string } }) {
+export default async function CurriculumDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -16,7 +19,7 @@ export default async function CurriculumDetailPage({ params }: { params: { id: s
   const { data: curriculum } = await supabase
     .from("curricula")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (!curriculum || curriculum.author_id !== user.id) {
@@ -27,7 +30,7 @@ export default async function CurriculumDetailPage({ params }: { params: { id: s
   const { data: modules } = await supabase
     .from("modules")
     .select("*")
-    .eq("curriculum_id", params.id)
+    .eq("curriculum_id", id)
     .order("order_index", { ascending: true });
 
   return (
@@ -73,7 +76,7 @@ export default async function CurriculumDetailPage({ params }: { params: { id: s
         </div>
 
         <div>
-          <VideoAssetPanel curriculumId={params.id} />
+          <VideoAssetPanel curriculumId={id} />
         </div>
       </div>
     </div>

@@ -46,7 +46,8 @@ When the user approves a finalized curriculum outline, you MUST call the saveCur
               estimated_duration_mins: z.number().describe("Estimated minutes to complete")
             }))
           }),
-          execute: async ({ title, description, modules }) => {
+          // @ts-ignore
+          execute: async ({ title, description, modules }: { title: string; description: string; modules: { title: string; content: string; estimated_duration_mins: number }[] }) => {
             if (!user) return { success: false, error: 'User is not authenticated.' };
             
             const { data: curriculum, error: cErr } = await supabase.from('curricula').insert({
@@ -54,7 +55,7 @@ When the user approves a finalized curriculum outline, you MUST call the saveCur
               description,
               author_id: user.id,
               status: 'draft'
-            }).select().single();
+            } as any).select().single();
             
             if (cErr || !curriculum) return { success: false, error: cErr?.message };
             
@@ -66,7 +67,7 @@ When the user approves a finalized curriculum outline, you MUST call the saveCur
               order_index: i
             }));
             
-            await supabase.from('modules').insert(modulesToInsert);
+            await supabase.from('modules').insert(modulesToInsert as any);
             
             return { success: true, curriculumId: curriculum.id, message: "Curriculum successfully saved to the database. Tell the user they can view it in their dashboard." };
           }
