@@ -18,16 +18,17 @@ export function MarketingHeader() {
     <>
       <nav className={`ap-nav ${scrolled ? "is-scrolled" : ""}`} role="navigation">
         <Link href="/" className="ap-nav__brand ap-lift">
-          <div className="w-5 h-5 bg-black rounded-sm flex items-center justify-center">
-            <span className="text-white text-[10px] font-bold">A</span>
+          <div className="w-5 h-5 bg-gradient-to-br from-blue-600 to-purple-600 rounded-sm flex items-center justify-center">
+            <span className="text-white text-[10px] font-bold">C</span>
           </div>
-          ARTISPRENEUR
+          CurriculumOS
         </Link>
 
         <div className="ap-nav__links hidden md:flex">
-          <Link href="/platform" className="ap-nav__link">Platform</Link>
-          <Link href="/use-cases" className="ap-nav__link">Use Cases</Link>
+          <Link href="/features" className="ap-nav__link">Features</Link>
+          <Link href="/how-it-works" className="ap-nav__link">How It Works</Link>
           <Link href="/pricing" className="ap-nav__link">Pricing</Link>
+          <Link href="/docs" className="ap-nav__link">Docs</Link>
         </div>
 
         <div className="flex items-center gap-2">
@@ -50,10 +51,11 @@ export function MarketingHeader() {
 
       {mobileOpen && (
         <div className="fixed inset-0 bg-[#0E0C09] z-[90] p-[80px_6vw] text-white flex flex-col gap-6 text-2xl font-sans font-semibold">
-          <Link href="/platform" onClick={() => setMobileOpen(false)}>Platform</Link>
-          <Link href="/use-cases" onClick={() => setMobileOpen(false)}>Use Cases</Link>
+          <Link href="/features" onClick={() => setMobileOpen(false)}>Features</Link>
+          <Link href="/how-it-works" onClick={() => setMobileOpen(false)}>How It Works</Link>
           <Link href="/pricing" onClick={() => setMobileOpen(false)}>Pricing</Link>
-          <Link href="/signup" className="ap-btn ap-btn--gold justify-center mt-6">
+          <Link href="/docs" onClick={() => setMobileOpen(false)}>Docs</Link>
+          <Link href="/signup" className="ap-btn ap-btn--primary justify-center mt-6">
             <span className="relative z-[2]">Get Started</span>
             <div className="ap-btn__bg"></div>
           </Link>
