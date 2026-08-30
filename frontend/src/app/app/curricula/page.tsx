@@ -11,51 +11,56 @@ export default async function CurriculaPage() {
 
   if (!user) redirect("/login");
 
-  const { data: curricula } = await supabase
+  const { data: curricula } = await (supabase
     .from("curricula")
     .select("*")
     .eq("author_id", user.id)
-    .order("updated_at", { ascending: false });
+    .order("updated_at", { ascending: false }) as any);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold">My Curricula</h1>
-          <p className="text-muted-foreground mt-1">Your saved learning paths</p>
-        </div>
-        <Link href="/app/chat" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-          <Plus size={16} /> New
-        </Link>
-      </div>
-
-      {(!curricula || curricula.length === 0) ? (
-        <div className="bg-card border border-border rounded-2xl p-12 text-center shadow-sm">
-          <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center mx-auto mb-4">
-            <BookOpen size={24} className="text-muted-foreground" />
+    <div className="ap-section ap-section--cream min-h-screen">
+      <div className="ap-section__inner max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-12 fade-up">
+          <div>
+            <span className="ap-eyebrow mb-2">Library</span>
+            <h1 className="ap-section__title text-4xl">My Curricula</h1>
+            <p className="text-muted-foreground mt-2 font-sans">Your saved learning paths</p>
           </div>
-          <h3 className="font-semibold mb-2">No saved curricula</h3>
-          <p className="text-sm text-muted-foreground mb-6">Curricula you generate and save will appear here.</p>
-          <Link href="/app/chat" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-medium text-sm hover:bg-primary/90 transition-colors">
-            <Plus size={16} /> Generate Your First Curriculum
+          <Link href="/app/chat" className="ap-btn ap-btn--primary">
+            <span className="ap-btn__bg"></span>
+            <Plus size={16} /> New
           </Link>
         </div>
-      ) : (
-        <div className="grid sm:grid-cols-2 gap-4">
-          {curricula.map((course) => (
-            <Link key={course.id} href={`/app/curriculum/${course.id}`} className="block bg-card border border-border hover:border-primary/50 transition-colors rounded-2xl p-6 shadow-sm hover:shadow-md">
-              <h3 className="font-semibold text-lg mb-2 line-clamp-1">{course.title}</h3>
-              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{course.description || "No description provided."}</p>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span className="flex items-center gap-1.5"><Clock size={14}/> {new Date(course.updated_at).toLocaleDateString()}</span>
-                <span className={`px-2 py-1 rounded-md capitalize font-medium ${course.status === 'published' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'}`}>
-                  {course.status}
-                </span>
-              </div>
+
+        {(!curricula || curricula.length === 0) ? (
+          <div className="ap-card text-center items-center justify-center py-16 fade-up-1">
+            <div className="w-16 h-16 rounded-2xl bg-[var(--ap-line)] flex items-center justify-center mx-auto mb-5 border border-[var(--ap-line-soft)]">
+              <BookOpen size={32} className="opacity-50" />
+            </div>
+            <h3 className="ap-card__title">No saved curricula</h3>
+            <p className="ap-card__desc max-w-sm mx-auto mb-8">Curricula you generate and save will appear here.</p>
+            <Link href="/app/chat" className="ap-btn ap-btn--primary">
+              <span className="ap-btn__bg"></span>
+              <Plus size={16} /> Generate Your First Curriculum
             </Link>
-          ))}
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 gap-4 fade-up-1">
+            {curricula.map((course: any) => (
+              <Link key={course.id} href={`/app/curriculum/${course.id}`} className="ap-card group cursor-pointer">
+                <h3 className="ap-card__title line-clamp-1">{course.title}</h3>
+                <p className="ap-card__desc mb-6 line-clamp-2">{course.description || "No description provided."}</p>
+                <div className="mt-auto flex items-center justify-between text-xs font-mono font-semibold text-[var(--ap-mute)]">
+                  <span className="flex items-center gap-1.5"><Clock size={14}/> {new Date(course.updated_at).toLocaleDateString()}</span>
+                  <span className={`px-2 py-1 rounded-md capitalize ${course.status === 'published' ? 'bg-[rgba(204,0,0,0.1)] text-[var(--ap-accent)]' : 'bg-[var(--ap-gold)] text-[var(--ap-ink)]'}`}>
+                    {course.status}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

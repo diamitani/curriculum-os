@@ -1,42 +1,54 @@
+"use client";
+
 import Link from "next/link";
+import { Twitter, Instagram } from "lucide-react";
 
 export function MarketingFooter() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="border-t border-border bg-card/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div>
-            <h4 className="font-semibold text-sm mb-3">Product</h4>
-            <div className="space-y-2">
-              <Link href="/features" className="block text-sm text-muted-foreground hover:text-foreground">Features</Link>
-              <Link href="/pricing" className="block text-sm text-muted-foreground hover:text-foreground">Pricing</Link>
-              <Link href="/how-it-works" className="block text-sm text-muted-foreground hover:text-foreground">How It Works</Link>
+    <footer className="ap-foot">
+      <div className="ap-foot__grid">
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-white text-black font-bold flex items-center justify-center rounded">
+              A
             </div>
+            <span className="font-sans font-bold text-lg tracking-tight">ARTISPRENEUR</span>
           </div>
-          <div>
-            <h4 className="font-semibold text-sm mb-3">Company</h4>
-            <div className="space-y-2">
-              <Link href="/about" className="block text-sm text-muted-foreground hover:text-foreground">About</Link>
-              <a href="https://github.com/diamitani/curriculum-os" target="_blank" rel="noopener" className="block text-sm text-muted-foreground hover:text-foreground">GitHub</a>
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-sm mb-3">Legal</h4>
-            <div className="space-y-2">
-              <span className="block text-sm text-muted-foreground">Privacy Policy</span>
-              <span className="block text-sm text-muted-foreground">Terms of Service</span>
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-sm mb-3">CurriculumOS</h4>
-            <p className="text-sm text-muted-foreground">
-              AI-powered personalized learning paths. Research, index, and generate curricula for anything you want to learn.
-            </p>
-          </div>
+          <p className="ap-foot__brand-line">The music business operating system for independent artists.</p>
+          <p className="font-mono text-[10px] text-[var(--ap-gold)] mt-3 uppercase tracking-widest">
+            Art Means Business.
+          </p>
         </div>
-        <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} CurriculumOS. All rights reserved.
+        <div>
+          <div className="ap-foot__col-title">Platform</div>
+          <Link href="/platform" className="ap-foot__link">The Agent</Link>
+          <Link href="/platform" className="ap-foot__link">Directory</Link>
+          <Link href="/platform" className="ap-foot__link">Academy</Link>
+          <Link href="/platform" className="ap-foot__link">EPKs</Link>
         </div>
+        <div>
+          <div className="ap-foot__col-title">Use Cases</div>
+          <Link href="/use-cases" className="ap-foot__link">Make it official</Link>
+          <Link href="/use-cases" className="ap-foot__link">Get booked</Link>
+          <Link href="/use-cases" className="ap-foot__link">Look the part</Link>
+        </div>
+        <div>
+          <div className="ap-foot__col-title">Company</div>
+          <Link href="/pricing" className="ap-foot__link">Pricing</Link>
+          <Link href="#" className="ap-foot__link">About Us</Link>
+          <Link href="#" className="ap-foot__link">Contact</Link>
+        </div>
+      </div>
+      
+      <div className="ap-foot__bar">
+        <div>&copy; {year} ARTISPRENEUR. ALL RIGHTS RESERVED.</div>
+        <div className="flex gap-4">
+          <Link href="#" className="text-white hover:text-[var(--ap-gold)] transition-colors"><Twitter size={16} /></Link>
+          <Link href="#" className="text-white hover:text-[var(--ap-gold)] transition-colors"><Instagram size={16} /></Link>
+        </div>
+        <span className="ap-foot__status">ALL SYSTEMS OPERATIONAL</span>
       </div>
     </footer>
   );

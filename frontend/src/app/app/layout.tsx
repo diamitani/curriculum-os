@@ -72,7 +72,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
               <div className="text-left">
                 <span className="block font-semibold text-sm leading-none mb-1 text-foreground">CurriculumOS</span>
-                <span className="block text-[11px] text-muted-foreground font-medium">{user.plan.toUpperCase()} PLAN</span>
+                <span className="block text-[11px] text-muted-foreground font-medium">{(user as any).plan?.toUpperCase() || 'FREE'} PLAN</span>
               </div>
             </div>
             <ChevronDown size={14} className="text-muted-foreground" />

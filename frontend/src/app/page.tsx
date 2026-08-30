@@ -1,264 +1,159 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  GraduationCap, Brain, Search, BookOpen, Zap, Target,
-  ArrowRight, Star, CheckCircle, Clock, Sparkles, Layers, Activity, Users, DollarSign, ShieldCheck
-} from "lucide-react";
-import { useRef, useState } from "react";
-
-const bentoFeatures = [
-  { 
-    title: "Anti-Hallucination Engine", 
-    desc: "Built on our proprietary RAG DAL framework. We crawl verified, Tier-1 sources to construct factually pristine courses. Zero hallucinations.",
-    icon: ShieldCheck,
-    color: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-    colSpan: "col-span-1 md:col-span-2",
-    delay: 0.1
-  },
-  { 
-    title: "Audience Personalization", 
-    desc: "Dynamically tailor the course pacing and tone to your specific users' goals, skill sets, and industry.",
-    icon: Users,
-    color: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-    colSpan: "col-span-1",
-    delay: 0.2
-  },
-  { 
-    title: "Export & Monetize", 
-    desc: "Instantly export massive generated curriculums into sellable assets (PDF, Markdown, or LMS formats).",
-    icon: DollarSign,
-    color: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-    colSpan: "col-span-1",
-    delay: 0.3
-  },
-  { 
-    title: "Multi-Agent Orchestration", 
-    desc: "Our autonomous agents handle the cognitive load of curriculum design—structuring prerequisites and bridging knowledge gaps automatically.",
-    icon: Layers,
-    color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-    colSpan: "col-span-1 md:col-span-2",
-    delay: 0.4
-  }
-];
-
-const tiers = [
-  { name: "Learner / Starter", price: "$0", period: "forever", desc: "For new learners or creators building their first course.", features: ["3 AI course generations / month", "Standard source verification", "Markdown exports", "Community support"], cta: "Get Started Free", href: "/signup", featured: false },
-  { name: "Pro Creator", price: "$49", period: "/month", desc: "For serious content creators and sales trainers.", features: ["Unlimited course generation", "GPT-4o & Claude 3.5 access", "Advanced Anti-Hallucination RAG", "Export to LMS / PDF", "Priority support"], cta: "Upgrade to Pro", href: "/signup?plan=pro", featured: true },
-  { name: "Agency", price: "$199", period: "/month", desc: "For training organizations and agencies.", features: ["Everything in Pro", "White-label exports", "Team collaboration (up to 5)", "Custom knowledge base ingestion", "API access"], cta: "Contact Sales", href: "/signup?plan=team", featured: false },
-];
 
 export default function LandingPage() {
-  const router = useRouter();
-  const heroRef = useRef<HTMLDivElement>(null);
-  const [prompt, setPrompt] = useState("");
-  
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-
-  const handleHeroSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
-    
-    // Save prompt to session storage to persist across auth redirect
-    sessionStorage.setItem("pendingPrompt", prompt);
-    router.push("/signup");
-  };
-
   return (
-    <div className="min-h-screen bg-background overflow-hidden font-sans">
+    <>
       <MarketingHeader />
 
-      {/* ── Dynamic Hero Section ── */}
-      <section ref={heroRef} className="relative pt-32 pb-32 px-4 flex items-center justify-center min-h-[90vh]">
-        {/* Glow Effects */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-[120px] pointer-events-none opacity-40" />
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none opacity-30" />
-        
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] pointer-events-none" />
+      <main>
+        {/* HERO SECTION */}
+        <section className="ap-hero ap-hero--media">
+          <div className="ap-hero__bg">
+            <img 
+              src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop" 
+              alt="Studio background" 
+              className="ap-hero__bg-img" 
+            />
+            <div className="ap-hero__overlay"></div>
+          </div>
+          <div className="ap-hero__rings"></div>
 
-        <motion.div 
-          style={{ y, opacity }}
-          className="relative z-10 max-w-5xl mx-auto text-center w-full"
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-md px-4 py-1.5 rounded-full text-sm font-medium mb-8 text-primary shadow-sm border border-border/50"
-          >
-            <Sparkles size={14} className="text-amber-500" />
-            <span className="text-foreground/80">The Unified OS for Learners & Creators</span>
-          </motion.div>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="text-5xl sm:text-6xl md:text-7xl font-bold font-display tracking-tight leading-[1.1] mb-6 text-foreground"
-          >
-            Build and sell courses with <br className="hidden md:block" />
-            <span className="text-gradient-primary">Verified AI Knowledge</span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed font-light"
-          >
-            For content creators and sales trainers. Deploy an autonomous AI architect to build custom curriculums tailored to your audience's goals. No hallucinations, just education.
-          </motion.p>
-          
-          {/* ── Hero Chat Input ── */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-            className="max-w-2xl mx-auto"
-          >
+          <div className="ap-hero__content fade-up">
+            <div className="ap-eyebrow !text-[var(--ap-gold)]">New Release</div>
+            <h1 className="ap-hero__headline">
+              Your Music Career is a
+              <em>Business.</em>
+            </h1>
+            <p className="ap-hero__sub">
+              The world's first agentic platform for independent musicians. Register your business, claim your royalties, and manage your entire career from one workspace.
+            </p>
+
             <form 
-              onSubmit={handleHeroSubmit}
-              className="relative flex items-center w-full bg-white shadow-2xl shadow-indigo-500/10 rounded-2xl border border-border/80 p-2 overflow-hidden transition-all focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500/50"
+              className="hero-form fade-up fade-up-1 flex max-w-[480px] gap-3 bg-white/5 p-[8px_8px_8px_24px] rounded-full border border-white/15" 
+              onSubmit={(e) => e.preventDefault()}
             >
-              <Search className="absolute left-4 text-muted-foreground" size={20} />
-              <input
-                type="text"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="What course do you want to build today?"
-                className="w-full bg-transparent border-none focus:outline-none pl-12 pr-32 py-4 text-base md:text-lg font-medium text-foreground placeholder:text-muted-foreground/60"
-                required
+              <input 
+                type="email" 
+                placeholder="Enter your email..." 
+                required 
+                className="bg-transparent border-none outline-none text-white flex-1 font-sans placeholder:text-white/50"
               />
-              <button
-                type="submit"
-                className="absolute right-2 top-2 bottom-2 bg-foreground text-background px-6 rounded-xl font-semibold flex items-center gap-2 hover:bg-foreground/90 transition-transform active:scale-95"
-              >
-                Generate <ArrowRight size={16} />
+              <button type="submit" className="ap-btn ap-btn--primary">
+                <span className="relative z-[2]">Run it like one</span>
+                <div className="ap-btn__bg"></div>
               </button>
             </form>
-            <p className="text-xs text-muted-foreground mt-4 flex items-center justify-center gap-2">
-              <CheckCircle size={12} className="text-emerald-500" />
-              BYOK supported. Connect your own OpenAI/Anthropic keys inside.
-            </p>
-          </motion.div>
-        </motion.div>
-      </section>
 
-      {/* ── Social Proof Marquee ── */}
-      <section className="border-y border-border bg-secondary/30 py-10 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4">
-          <p className="text-center text-sm font-medium text-muted-foreground mb-8 uppercase tracking-widest">Trusted by top 1% content creators and trainers</p>
-          <div className="flex flex-wrap items-center justify-center gap-12 sm:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center gap-2 font-display font-bold text-xl"><Activity size={24}/> CreatorCamp</div>
-            <div className="flex items-center gap-2 font-display font-bold text-xl"><Zap size={24}/> SalesFlow</div>
-            <div className="flex items-center gap-2 font-display font-bold text-xl"><Brain size={24}/> ExpertInstitute</div>
-            <div className="flex items-center gap-2 font-display font-bold text-xl"><Users size={24}/> Mastery Inc.</div>
+            <div className="ap-hero__trust fade-up fade-up-2">
+              <span>7 AI Managers</span>
+              <span>78K+ Industry Contacts</span>
+              <span>100% Rights Ownership</span>
+            </div>
+          </div>
+
+          <div className="ap-hero__watermark">ARTISPRENEUR</div>
+        </section>
+
+        {/* TICKER */}
+        <div className="ap-ticker">
+          <div className="ap-ticker__track">
+            <div className="ap-ticker__row">
+              <span>THE MUSIC BUSINESS OS</span>
+              <span>✦</span>
+              <span>FOR INDEPENDENT ARTISTS</span>
+              <span>✦</span>
+              <span>REGISTER YOUR BUSINESS</span>
+              <span>✦</span>
+              <span>CLAIM YOUR ROYALTIES</span>
+              <span>✦</span>
+              <span>MANAGE YOUR CAREER</span>
+              <span>✦</span>
+              <span>NO LABEL REQUIRED</span>
+              <span>✦</span>
+            </div>
+            <div className="ap-ticker__row" aria-hidden="true">
+              <span>THE MUSIC BUSINESS OS</span>
+              <span>✦</span>
+              <span>FOR INDEPENDENT ARTISTS</span>
+              <span>✦</span>
+              <span>REGISTER YOUR BUSINESS</span>
+              <span>✦</span>
+              <span>CLAIM YOUR ROYALTIES</span>
+              <span>✦</span>
+              <span>MANAGE YOUR CAREER</span>
+              <span>✦</span>
+              <span>NO LABEL REQUIRED</span>
+              <span>✦</span>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* ── Bento Grid Features ── */}
-      <section className="py-32 px-4 relative" id="features">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold font-display mb-6 tracking-tight">
-              A premium engine for <span className="text-muted-foreground">serious creators.</span>
+        {/* WHY IT MATTERS */}
+        <section className="ap-section ap-section--cream">
+          <div className="ap-grid-bg"></div>
+          <div className="ap-section__inner">
+            
+            <div className="ap-section__head fade-up">
+              <div className="ap-eyebrow !text-[var(--ap-accent)]">Why It Matters</div>
+              <h2 className="ap-section__title">
+                The industry profits from what you <em>don't know.</em>
+              </h2>
+              <p className="mt-6 text-[18px] text-[var(--ap-mute)] max-w-[640px] leading-relaxed">
+                Every artist is an entrepreneur — but most were never taught the business. Unclaimed royalties, predatory contracts, and missing paperwork cost independent artists billions every year.
+              </p>
+            </div>
+
+            <div className="ap-cards fade-up fade-up-1">
+              <div className="ap-card">
+                <div className="ap-card__tag !text-[var(--ap-accent)] mb-3">01 — ROYALTIES</div>
+                <h3 className="ap-card__title">Money is being left on the table.</h3>
+                <p className="ap-card__desc">
+                  Without PRO registration and proper metadata, your streams, radio plays, and sync placements generate royalties you never see. Registration is step one of getting paid.
+                </p>
+              </div>
+              <div className="ap-card">
+                <div className="ap-card__tag !text-[var(--ap-accent)] mb-3">02 — EDUCATION</div>
+                <h3 className="ap-card__title">Nobody teaches the business of music.</h3>
+                <p className="ap-card__desc">
+                  Publishing, splits, licensing, taxes — the knowledge gap is where careers stall. The Academy turns industry fine print into skills you actually use.
+                </p>
+              </div>
+              <div className="ap-card">
+                <div className="ap-card__tag !text-[var(--ap-accent)] mb-3">03 — CONTRACTS</div>
+                <h3 className="ap-card__title">One bad signature can cost your masters.</h3>
+                <p className="ap-card__desc">
+                  Handshake deals and unread contracts end careers. Generate, review, and understand every agreement before you sign — with AI reading the fine print.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* CTA BANNER */}
+        <section className="ap-section ap-section--dark text-center">
+          <div className="ap-section__inner fade-up flex flex-col items-center">
+            <div className="ap-eyebrow !text-[var(--ap-gold)] mb-4">Get Started Today</div>
+            <h2 className="ap-section__title mb-6 max-w-[800px]">
+              Your music career is a<br/><em>business.</em> Run it like one.
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light">
-              Built on the ROSTR framework, our agents handle the cognitive load of curriculum design so you can focus on building your audience and selling your expertise.
+            <p className="text-white/60 max-w-[540px] mb-10 leading-relaxed text-lg">
+              Get an independent artist profile and guided legal business registration with an Artispreneur account today.
             </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {bentoFeatures.map((f, i) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: f.delay }}
-                key={f.title} 
-                className={`bg-white rounded-3xl p-8 relative overflow-hidden group hover:border-primary/30 transition-colors shadow-sm border border-border/80 ${f.colSpan}`}
-              >
-                <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-6 shadow-sm ${f.color} group-hover:scale-110 transition-transform duration-500`}>
-                  <f.icon size={28} />
-                </div>
-                <h3 className="text-2xl font-bold font-display mb-3">{f.title}</h3>
-                <p className="text-muted-foreground leading-relaxed text-lg">{f.desc}</p>
-                <div className="absolute -bottom-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:rotate-12 duration-500">
-                  <f.icon size={160} />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── Pricing ── */}
-      <section className="py-32 px-4 bg-secondary/20 relative" id="pricing">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background pointer-events-none" />
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold font-display mb-6 tracking-tight">Invest in your business.</h2>
-            <p className="text-xl text-muted-foreground font-light">Simple pricing that scales with your sales volume.</p>
+            <Link href="/pricing" className="ap-btn ap-btn--gold text-base px-8 py-4">
+              <span className="relative z-[2]">Create Free Account</span>
+              <div className="ap-btn__bg"></div>
+            </Link>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
-            {tiers.map((t, i) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                key={t.name} 
-                className={`bg-white rounded-3xl p-8 relative transition-all duration-300 ${t.featured ? "border-2 border-primary shadow-2xl shadow-primary/20 md:-translate-y-4 md:scale-105 z-10" : "border border-border/80 hover:border-border"}`}
-              >
-                {t.featured && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-500 text-white text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg">
-                    Most Popular
-                  </div>
-                )}
-                <h3 className="font-semibold text-xl mb-2 text-foreground">{t.name}</h3>
-                <p className="text-sm text-muted-foreground mb-6 h-10">{t.desc}</p>
-                
-                <div className="mb-8 flex items-baseline gap-1">
-                  <span className="text-5xl font-bold font-display tracking-tight text-foreground">{t.price}</span>
-                  <span className="text-muted-foreground font-medium">{t.period}</span>
-                </div>
-                
-                <ul className="space-y-4 mb-10">
-                  {t.features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm font-medium text-foreground/80">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <CheckCircle size={12} className="text-primary" />
-                      </div>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                
-                <Link
-                  href={t.href}
-                  className={`block text-center py-4 rounded-xl font-bold text-sm transition-all duration-300 ${t.featured ? "bg-foreground text-background hover:bg-foreground/90 shadow-xl shadow-foreground/10" : "bg-secondary/50 hover:bg-secondary"}`}
-                >
-                  {t.cta}
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       <MarketingFooter />
-    </div>
+    </>
   );
 }
