@@ -82,5 +82,6 @@ export default async function CurriculumDetailPage({ params }: { params: Promise
         </div>
       </div>
     </div>
+  </div>
   );
 }
